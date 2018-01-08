@@ -13,78 +13,55 @@
 \frame{\titlepage}
 
 \begin{frame}
-\frametitle{Custom Generic Developer Tool}
-\begin{itemize}
-\item Writing custom developer tools is fun! \pause
-\item Too much repetition though
-\end{itemize}
+\frametitle{Middlefield - Custom generic developer tool}
+Only needed to reinvent plugins (gather),
+command-line parsing (caparg),
+and dependency injection (elcaminoreal)!
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Why not reinvent everything?}
-\begin{itemize}
-\item \verb|gather| -- plugin system
-\item \verb|caparg| -- argument parsing
-\item \verb|elcaminoreal| -- dependency injection
-\item \verb|middlefield| -- a multifunctional tool
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Only built-in command}
-\begin{lstlisting}
-$ mf self-build --output mf.pex
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Example plugin -- middlefield echo}
+\frametitle{Example plugin -- middlefield echo (setup.py)}
 \begin{lstlisting}
 # setup.py
-# ...
+<snip>
 setuptools.setup(
-# ...
-    install_requires=['middlefield'],
-    entry_points=dict(
-        gather=["gather=middlefield_echo"],
-    )
-# ...
+<snip>
+entry_points=dict(
+    gather=["gather=middlefield_echo"]),
 )
 \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Example plugin -- middlefield echo}
+\frametitle{Example plugin -- middlefield echo (deps.py)}
 \begin{lstlisting}
-# middlefield_echo/_impl.py
-# ...imports ...
-@middlefield.COMMANDS.command(
-    parser=command('',
-               what=option(type=typing.List[str],
-                           have_default=True)),
-    dependencies=['echo_printer'])
-def echo(args, dependencies):
-    dependencies['echo_printer'](*args['what'])
-# ...continues...
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Example plugin -- middlefield echo}
-\begin{lstlisting}
-# ...continues...
+<snip>
 @middlefield.COMMANDS.dependency()
-def echo_printer(_dependencies,
-                 _maybe_dependencies):
+def echo_printer(_deps, _maybe_deps):
     return print
 \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Serving suggestion}
+\frametitle{Example plugin -- middlefield echo (command.py)}
 \begin{lstlisting}
-$ mf self-build --package middlefield_echo \
-                --output mf.pex
+<snip>
+@middlefield.COMMANDS.command(
+parser=command('',
+    what=option(type=typing.List[str],
+                have_default=True)),
+dependencies=['echo_printer'])
+def echo(args, dependencies):
+    dependencies['echo_printer'](*args['what'])
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Only built-in command}
+\begin{lstlisting}
+$ pip install middlefield
+$ mf self-build --output mf.pex \
+     --package middlefield_echo
 $ <upload mf.pex to your favorite internal place>
 \end{lstlisting}
 \end{frame}
@@ -92,11 +69,10 @@ $ <upload mf.pex to your favorite internal place>
 \begin{frame}
 \frametitle{What's next?}
 \begin{itemize}
-\item Write a plugin (internal or public) \pause
-\item Distribute internally \pause
-\item Talk to me \pause zadka.moshe@gmail.com \pause https://cobordism.com
+\item Write a plugin (internal or public)
+\item Distribute internally
+\item Talk to me zadka.moshe@gmail.com https://cobordism.com
 \end{itemize}
 \end{frame}
-
 
 \end{document}
