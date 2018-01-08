@@ -3,21 +3,14 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 
-\title{Introducing Middlefield}
-\subtitle{https://github.com/elcaminoreal/ https://github.com/moshez/introducing-middlefield}
+\title{Introducing Middlefield -- Custom generic developer tool}
+\subtitle{https://github.com/elcaminoreal/ https://github.com/moshez/introducing-middlefield -- reinventing plugins (gather), cli parsing (caparg) and dependency injection (elcaminoreal)}
 \author{Moshe Zadka -- https://cobordism.com}
 \date{Pyninsula January 2017}
  
 \begin{document}
  
 \frame{\titlepage}
-
-\begin{frame}
-\frametitle{Middlefield - Custom generic developer tool}
-Only needed to reinvent plugins (gather),
-command-line parsing (caparg),
-and dependency injection (elcaminoreal)!
-\end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Build Pex with plugins to add commands}
@@ -31,21 +24,17 @@ $ mf self-build --output mf.pex \
   --shebang '/usr/bin/env python3'
 $ ./mf.pex echo --what hello 
 hello
+$ upload-to-internal-place mf.pex
 \end{lstlisting}
-\pause
-Upload \verb|mf.pex| to your favorite internal place.
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Example plugin -- middlefield echo (setup.py)}
 \begin{lstlisting}
-# setup.py
 <snip>
 setuptools.setup(
+entry_points={"gather":["gather=middlefield_echo"]},
 <snip>
-entry_points=dict(
-    gather=["gather=middlefield_echo"]),
-)
 \end{lstlisting}
 \end{frame}
 
