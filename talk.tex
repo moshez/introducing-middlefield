@@ -20,6 +20,23 @@ and dependency injection (elcaminoreal)!
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{Only built-in command}
+\begin{lstlisting}
+$ pip install middlefield
+$ mf echo --what hello
+Usage:
+    self-build
+$ mf self-build --output mf.pex \
+  --package middlefield_echo \
+  --shebang '/usr/bin/env python3'
+$ ./mf.pex echo --what hello 
+hello
+\end{lstlisting}
+\pause
+Upload \verb|mf.pex| to your favorite internal place.
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{Example plugin -- middlefield echo (setup.py)}
 \begin{lstlisting}
 # setup.py
@@ -53,16 +70,6 @@ parser=command('',
 dependencies=['echo_printer'])
 def echo(args, dependencies):
     dependencies['echo_printer'](*args['what'])
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Only built-in command}
-\begin{lstlisting}
-$ pip install middlefield
-$ mf self-build --output mf.pex \
-     --package middlefield_echo
-$ <upload mf.pex to your favorite internal place>
 \end{lstlisting}
 \end{frame}
 
