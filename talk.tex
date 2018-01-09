@@ -1,5 +1,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{textcomp}
 
 \title{Introducing Middlefield -- Custom generic developer tool}
 \subtitle{https://github.com/elcaminoreal/ https://github.com/moshez/introducing-middlefield -- reinventing plugins (gather), cli parsing (caparg) and dependency injection (elcaminoreal)}
@@ -13,6 +14,23 @@
 \end{titlepage}
 
 \frame{\titlepage}
+
+Middlefield is a platform to build developer tools.
+In every development environment,
+tooling will be slightly different --
+so middlefield gets out of the way,
+letting you build your own.
+
+There is only one built-in command:
+the command to self-build a Python executable that includes
+the base middlefield
+{\em as well as} 
+other plugins.
+This executable can be distributed internally using whatever facilities
+exist and are beloved by local developers:
+an artifact repository,
+a homebrew channel,
+and so on.
 
 \begin{frame}[fragile]
 \frametitle{Build Pex with plugins to add commands}
@@ -31,15 +49,32 @@ $ upload-to-internal-place mf.pex
 \end{lstlisting}
 \end{frame}
 
+Middlefield is based on the {\em Gather} framework,
+and so all middlefield plugins must be registered
+with Gather.
+This is done via \texttt{entry{\textunderscore}points} in the
+\texttt{setup.py}
+file.
+
 \begin{frame}[fragile]
 \frametitle{Example plugin -- middlefield echo (setup.py)}
 \begin{lstlisting}
 <snip>
 setuptools.setup(
-entry_points={"gather":["gather=middlefield_echo"]},
+entry_points={"gather":
+              ["gather=middlefield_echo"]},
 <snip>
 \end{lstlisting}
 \end{frame}
+
+Middlefield supports {\em dependencies} and {\em commands}.
+In this example,
+in order to make it easier to explain,
+we put them in separate files.
+Middlefield itself is agnostic to code organization issues --
+code organization should depend,
+like in this example,
+on making it easier for other people to read the code.
 
 \begin{frame}[fragile]
 \frametitle{Example plugin -- middlefield echo (deps.py)}
@@ -50,6 +85,19 @@ def echo_printer(_deps, _maybe_deps):
     return print
 \end{lstlisting}
 \end{frame}
+
+This dependency is simple:
+it does not need any dependencies of its own.
+In this case,
+it is also trivial --
+it does not need to do any work to get the result.
+However,
+one advantage that using dependencies gives us
+is the ability to override them for unit testing.
+In the echo plugins' unit tests
+(not shown here)
+we take advantage of that --
+thus avoiding the need to patch \texttt{sys.stdout}.
 
 \begin{frame}[fragile]
 \frametitle{Example plugin -- middlefield echo (command.py)}
@@ -65,13 +113,45 @@ def echo(args, dependencies):
 \end{lstlisting}
 \end{frame}
 
+The echo command is a function.
+In the registration decorator,
+we get the opportunity to specify the expected command line syntax
+using {\em caparg},
+also known as
+"Captain Arguments".
+Its declarative style,
+and ability to combine sub-commands after they are defined,
+are useful here.
+
+This is it --
+other than some housekeeping files,
+this is all it takes to write a middlefield plugin,
+and put it in a pex file for easy distribution.
+
+A more realistic,
+and interesting,
+plugin,
+is the one this talk is built with --
+\texttt{moshez{\textunderscore}middlefield{\textunderscore}beamer}.
+This plugin,
+as many future middlefield plugins,
+is not intended to be useful generically --
+it is definitely opinionated about the style
+of presentations.
+The plugin approach means that it can be used locally by the author,
+while other development teams can have the subcommand "beamer"
+do something completely different! 
+
 \begin{frame}
 \frametitle{What's next?}
 \begin{itemize}
 \item Write a plugin (internal or public)
 \item Distribute internally
-\item Talk to me zadka.moshe@gmail.com https://cobordism.com
+\item Talk to me -- zadka.moshe@gmail.com -- https://cobordism.com
 \end{itemize}
 \end{frame}
+
+Please send me any feedback,
+and open issues on any of the related projects.
 
 \end{document}
